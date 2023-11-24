@@ -1,0 +1,40 @@
+button {
+    border: 1px solid rgb(100, 100, 100);
+    background-color: rgb(240, 240, 240);
+    font-size: 1rem;
+    margin: 0;
+    padding: 10px 10px;
+}
+
+button:hover {
+background-color: rgb(200, 200, 200);
+}
+
+p + p {
+  margin: 0;
+}
+
+button + button {
+   height: 50px;
+}
+
+#page-data {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 0rem;
+}
+#dashboard {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 1rem;
+}
+
+#content {
+	display: flex;
+	text-align: center;
+	flex-direction: column;
+	align-items: center;
+	gap: 1rem;
+}

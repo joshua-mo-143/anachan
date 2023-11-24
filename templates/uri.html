@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block content %}
+	<button hx-get="/stats/domains?domain={{domain_base}}" hx-target="#dashboard">Back to domain page</button>
+	<h2>Stats by URI - {{domain}}</h2>
+	<p>Number of page hits from the last 7 days, sorted by date:</p> 
+	{% if data %}
+	<div id="page-data">
+	{% for website in data %}
+		<p> {{ website.date }} - {{ website.count }}
+	{% endfor %}
+	</div>
+	{% else %}
+		<p> No data :( </p>
+	{% endif %}
+
+{% endblock content %}

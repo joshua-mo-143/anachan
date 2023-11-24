@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block content %}
+	<button hx-get="/dashboard" hx-target="body">Back to main dashboard</button>
+	<h2>Stats by Domain - {{domain}}</h2>
+	<p>Number of page hits from the last 30 days, sorted by URI:</p> 
+	{% if data %}
+	{% for website in data %}
+		<button hx-get="/stats/uri?domain={{ website.uri }}" hx-target="#dashboard">{{website.uri}} - {{ website.count }}</button> 
+	{% endfor %}
+	{% else %}
+		<p> No data :( </p>
+	{% endif %}
+{% endblock content %}

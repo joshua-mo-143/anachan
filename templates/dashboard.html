@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block content %}
+	<h1>Shuttle Analytics - Dashboard</h1>
+<a href="/">Back to the homepage</a>
+	<div id="dashboard">
+		<h2> Click below to go to check out the stats for the relevant website. </h2>
+	{% if data %}
+	{% for website in data %}
+	<button hx-get="/stats/domains?domain={{ website.domain }}" hx-target="#dashboard">{{ website.domain}} - {{website.count}}</button>
+	{% endfor %}
+	{% else %}
+		<p> No data collected :( </p>
+	{% endif %}
+	</div>
+{% endblock content %}
