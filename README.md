@@ -1,4 +1,4 @@
-# Legendary Analytics Machine
+# AnaChan
 A simple web analytics service that lets you track views for your website, per URI.
 
 ## Usage
@@ -32,3 +32,7 @@ If there's any other issues, feel free to open an issue!
 - Add support for buttons/links (button clickthrough rate, clicking on links, etc)
 - Add more things that you can view (highest referrer link, etc)
 - expand metrics
+
+## Fun facts
+AnaChan is supposed to be shorthand for "Analytics Channel", but AnaChan is just easier to say.
+This repo was also originally called "legendary-analytics-machine", but that name is far too long.
