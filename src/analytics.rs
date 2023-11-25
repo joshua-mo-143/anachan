@@ -26,7 +26,6 @@ pub async fn script(
     State(state): State<AppState>,
     Extension(frontend): Extension<Arc<Tera>>,
 ) -> impl IntoResponse {
-    tracing::error!("The domain is: {}", state.domain);
     let mut ctx = Context::new();
     ctx.insert("domain", &state.domain);
 

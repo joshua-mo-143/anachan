@@ -1,7 +1,15 @@
 [package]
-name = "analytics"
+name = "anachan"
 version = "0.1.0"
 edition = "2021"
+
+[[bin]]
+name = "anachan"
+path = "src/bin/shuttle-bin.rs"
+
+[[bin]]
+name = "standalone"
+path = "src/bin/standalone-bin.rs"
 
 [dependencies]
 axum = { version = "0.6.20", features = ["headers", "macros"] }

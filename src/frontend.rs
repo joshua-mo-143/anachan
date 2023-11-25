@@ -137,12 +137,12 @@ pub async fn query_uri(
 }
 
 pub async fn about(
-        State(state): State<AppState>,
-        Extension(frontend): Extension<Arc<Tera>>
-        ) -> impl IntoResponse {
+    State(state): State<AppState>,
+    Extension(frontend): Extension<Arc<Tera>>,
+) -> impl IntoResponse {
     let mut ctx = Context::new();
     ctx.insert("domain", &state.domain);
-    
+
     Html(frontend.render("about", &ctx).unwrap())
 }
 
