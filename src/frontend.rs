@@ -1,4 +1,5 @@
 use crate::AppState;
+use std::str::FromStr;
 use axum::{
     extract::{Query, State},
     http::StatusCode,
@@ -56,7 +57,7 @@ pub async fn dashboard(
 }
 #[derive(Deserialize)]
 pub struct DomainStatsQuery {
-    domain: Url,
+    domain: String,
 }
 
 pub async fn query_domain(
@@ -72,7 +73,7 @@ pub async fn query_domain(
 	DATE_PART('day', CURRENT_TIMESTAMP - DATE_TIME) BETWEEN 0 AND 7
 	GROUP BY uri"#,
     )
-    .bind(&query.domain.clone().into_string())
+    .bind(&query.domain.clone())
     .fetch_all(&db)
     .await
     {
@@ -103,7 +104,7 @@ pub async fn query_uri(
     DATE_PART('day', CURRENT_TIMESTAMP - DATE_TIME) BETWEEN 0 AND 7
 	GROUP BY date"#,
     )
-    .bind(&query.domain.clone().into_string())
+    .bind(&query.domain.clone())
     .fetch_all(&db)
     .await
     {
@@ -114,24 +115,14 @@ pub async fn query_uri(
             None
         }
     };
-    let domain_base = format!(
-        "{}{}{}",
-        query.domain.host_str().unwrap(),
-        if query.domain.port().is_some() {
-            ":"
-        } else {
-            ""
-        },
-        if query.domain.port().is_some() {
-            query.domain.port().unwrap().to_string()
-        } else {
-            String::new()
-        }
-    );
+
+    let url = Url::from_str(&query.domain.clone()).unwrap();
+
+    let domain_base = url.host_str().unwrap();
 
     let mut ctx = Context::new();
     ctx.insert("data", &data);
-    ctx.insert("domain", &query.domain.clone().into_string());
+    ctx.insert("domain", &query.domain);
     ctx.insert("domain_base", &domain_base);
     Html(frontend.render("uri", &ctx).unwrap())
 }
