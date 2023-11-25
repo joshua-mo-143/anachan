@@ -9,6 +9,8 @@ async fn main() {
     let conn_str = env::var("DATABASE_URL").unwrap();
     let db = PgPool::connect(&conn_str).await.unwrap();
 
+    sqlx::migrate!().run(&db).await.unwrap();
+
     let port = env::var("PORT").unwrap_or_else(|_| "8000".to_string()).parse::<u16>().unwrap();
 
     let domain = if cfg!(debug_assertions) {
