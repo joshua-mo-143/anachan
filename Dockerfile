@@ -18,6 +18,6 @@ FROM debian:bookworm-slim AS runtime
 WORKDIR /app
 COPY --from=builder /app/target/release/standalone /usr/local/bin
 
-VOLUME ./templates /usr/local/bin/templates
+COPY --from-builder ./templates /usr/local/bin/templates
 
 ENTRYPOINT ["/usr/local/bin/standalone"]
