@@ -16,7 +16,8 @@ async fn main() {
     let domain = if cfg!(debug_assertions) {
         format!("http://localhost:{port}")
     } else {
-        env::var("RAILWAY_PUBLIC_DOMAIN").unwrap()
+        let domain = env::var("RAILWAY_PUBLIC_DOMAIN").unwrap();
+        format!("https://{domain}") 
     };
 
     let state = AppState {db, domain};
