@@ -1,7 +1,9 @@
 # AnaChan
 A simple web analytics service that lets you track views for your website, per URI.
 
-## Usage
+## Quickstart
+
+### Shuttle Deployment
 Use the following `cargo shuttle` command (make sure you're logged in):
 ```bash
 cargo shuttle init --from joshua-mo-143/legendary-analytics-machine
@@ -17,6 +19,13 @@ Simply add the following to the HTML head of any web page you own to start using
 ```html
 <script src="https://<your-project-name-here>.shuttleapp.rs/script.js"></script>
 ``` 
+
+### Non Shuttle Deployment
+Use the Dockerfile!
+
+You'll need to provide `PORT`, `DATABASE_URL` and `DOMAIN_URL`.
+
+Docker secrets via Swarm is not supported. Yet.
 
 ## Troubleshooting
 Make sure your `cargo-shuttle` and other Shuttle-related dependencies on the project are up to date.
