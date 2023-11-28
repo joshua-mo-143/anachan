@@ -1,11 +1,12 @@
-{% extends 'base.html' %}
-
-{% block content %}
-	<button hx-get="/stats/domains?domain={{domain_base}}" hx-target="#dashboard">Back to domain page</button>
+	
+	<h1> Dashboard</h1>
+	<button hx-get="/stats/domains?domain={{domain_base}}" hx-target="#content">Back to domain page</button>
 	<h2>Stats by URI - {{domain}}</h2>
-	<p>Number of page hits from the last 7 days, sorted by date:</p> 
+	<div class="uri-page">
+	<div class="uri-data">
+		<h3>Page Hits</h3> 
 	{% if data %}
-	<div id="page-data">
+	<div class="page-data">
 	{% for website in data %}
 		<p> {{ website.date }} - {{ website.count }}
 	{% endfor %}
@@ -13,5 +14,18 @@
 	{% else %}
 		<p> No data :( </p>
 	{% endif %}
+		</div>	
 
-{% endblock content %}
+	<div class="uri-data">
+		<h3>Top Event Interactions</h3> 
+	{% if events %}
+	<div class="page-data">
+	{% for event in events %}
+		<p> {{ event.event_id }} - {{ event.count }}
+	{% endfor %}
+	</div>
+	{% else %}
+		<p> No data :( </p>
+	{% endif %}
+		</div>	
+</div>

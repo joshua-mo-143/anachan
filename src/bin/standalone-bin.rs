@@ -1,5 +1,4 @@
 use sqlx::PgPool;
-use shuttle_metadata::{Metadata, Environment};
 use anachan::{AppState, router::{init_tera, init_router}};
 use std::net::SocketAddr;
 use std::env; 

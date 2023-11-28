@@ -19,6 +19,12 @@ struct Domain {
 }
 
 #[derive(Serialize, sqlx::FromRow)]
+struct Event {
+    event_id: String,
+    count: i64,
+}
+
+#[derive(Serialize, sqlx::FromRow)]
 struct DomainUri {
     uri: String,
     count: i64,
@@ -63,8 +69,12 @@ pub struct DomainStatsQuery {
 pub async fn query_domain(
     State(AppState { db, .. }): State<AppState>,
     Extension(frontend): Extension<Arc<Tera>>,
-    Query(query): Query<DomainStatsQuery>,
+    Query(mut query): Query<DomainStatsQuery>,
 ) -> impl IntoResponse {
+    if query.domain == *"localhost" {
+        query.domain = "localhost:8000".to_string();
+    }
+
     let data = match sqlx::query_as::<_, DomainUri>(
         r#"SELECT uri, COUNT(*) FROM stats 
 	WHERE 
@@ -102,7 +112,30 @@ pub async fn query_uri(
 	uri = $1 
     and
     DATE_PART('day', CURRENT_TIMESTAMP - DATE_TIME) BETWEEN 0 AND 7
-	GROUP BY date"#,
+	GROUP BY date
+    ORDER BY date DESC"#,
+    )
+    .bind(&query.domain.clone())
+    .fetch_all(&db)
+    .await
+    {
+        Ok(res) => Some(res),
+        Err(e) => {
+            println!("Encountered an error trying to fetch analytics on the homepage: {e}");
+
+            None
+        }
+    };
+
+    let events = match sqlx::query_as::<_, Event>(
+        r#"SELECT event_id, COUNT(event_id) FROM events
+	WHERE 
+	uri = $1 
+    and
+    DATE_PART('day', CURRENT_TIMESTAMP - DATE_TIME) BETWEEN 0 AND 7
+	GROUP BY event_id
+    ORDER BY count DESC
+    "#,
     )
     .bind(&query.domain.clone())
     .fetch_all(&db)
@@ -122,6 +155,7 @@ pub async fn query_uri(
 
     let mut ctx = Context::new();
     ctx.insert("data", &data);
+    ctx.insert("events", &events);
     ctx.insert("domain", &query.domain);
     ctx.insert("domain_base", &domain_base);
     Html(frontend.render("uri", &ctx).unwrap())

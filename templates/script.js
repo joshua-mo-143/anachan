@@ -20,10 +20,10 @@ for (let i = 0; i < links.length; i++) {
 })
 
 document.addEventListener("visibilitychange", send_logs(), false);
-
+  
 async function send_logs() {
 	if (!Document.hidden) {	
-	let res = await fetch("{{domain}}/push", {
+	let res = await fetch("{{domain}}/push/visit", {
 		method: "POST",
 		keepalive: true,
 		headers: {
@@ -39,3 +39,31 @@ async function send_logs() {
 	});
 	}
 } 
+
+document.addEventListener("DOMContentLoaded", function() {
+	let buttons = document.querySelectorAll('button');
+
+for (let i = 0; i < buttons.length; i++) {
+	buttons[i].addEventListener('click', function(event) {
+
+	let eventId = event.target.getAttribute("data-anachan-id");
+	if (eventId === null) {
+		return
+	}
+
+	fetch("{{domain}}/push/event", {
+		method: "POST",
+		keepalive: true,
+		headers: {
+			"content-type":"application/json",
+		},
+		body: JSON.stringify({
+			"uri": window.location.href,
+			"sessionUuid": uuid,
+			"eventId": eventId,
+			"dateTime": datetime_entered_isostring 
+		}),
+	});
+	});
+}})
+

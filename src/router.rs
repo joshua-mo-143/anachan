@@ -1,9 +1,10 @@
 use std::sync::Arc;
+use tower_http::services::ServeDir;
 use tera::Tera;
 use crate::AppState;
 use axum::{routing::{get, post}, Router, Extension};
 use crate::frontend::{about, dashboard, homepage, query_domain, query_uri, styles};
-use crate::analytics::{script, submit_analytics};
+use crate::analytics::{script, submit_visit, submit_event};
 
 pub fn init_tera() -> Tera {
     let mut tera = Tera::new("templates/*").unwrap();
@@ -30,7 +31,9 @@ pub fn init_router(state: AppState, tera: Tera) -> Router {
         .route("/about", get(about))
         .route("/script.js", get(script))
         .route("/styles.css", get(styles))
-        .route("/push", post(submit_analytics))
+        .route("/push/visit", post(submit_visit))
+        .route("/push/event", post(submit_event))
         .with_state(state)
         .layer(Extension(Arc::new(tera)))
+        .nest_service("/assets", ServeDir::new("templates/assets"))
 }

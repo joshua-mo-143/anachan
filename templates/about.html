@@ -1,18 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shuttle Analytics - About</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
-    <link href="./styles.css" rel="stylesheet">
-    <script src="{{domain}}/script.js"></script>
-</head>
-<body>
-	<h1>Shuttle Analytics - About</h1>
+{% extends 'base.html' %}
+{% block content %}
+	<h1>AnaChan - About</h1>
+	<p> This is a test page with the website's script on to make sure that it works.</p>
+	<button data-anachan-id="test">Click me!</button>
 <a href="/">Home page</a>
-</body>
-</html>
+
+{% endblock content %}

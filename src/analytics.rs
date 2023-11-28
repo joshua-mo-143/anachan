@@ -12,7 +12,7 @@ use std::sync::Arc;
 use tera::{Context, Tera};
 
 #[derive(Deserialize)]
-pub struct AnalyticsSubmission {
+pub struct VisitSubmission {
     uri: String,
     #[serde(rename = "sessionUuid")]
     session_uuid: String,
@@ -20,6 +20,18 @@ pub struct AnalyticsSubmission {
     date_time: DateTime<Utc>,
     duration: i32,
     domain: String,
+}
+
+#[derive(Deserialize)]
+pub struct EventSubmission {
+    uri: String,
+    #[serde(rename = "sessionUuid")]
+    session_uuid: String,
+    #[serde(rename = "dateTime")]
+    date_time: DateTime<Utc>,
+    #[serde(rename = "eventId")]
+    event_id: String,
+
 }
 
 pub async fn script(
@@ -38,10 +50,10 @@ pub async fn script(
         .unwrap()
 }
 
-pub async fn submit_analytics(
+pub async fn submit_visit(
     TypedHeader(origin): TypedHeader<Origin>,
     State(state): State<AppState>,
-    Json(stats): Json<AnalyticsSubmission>,
+    Json(stats): Json<VisitSubmission>,
 ) -> impl IntoResponse {
     if !stats.uri.contains(origin.hostname()) {
         println!(
@@ -62,6 +74,36 @@ pub async fn submit_analytics(
     .bind(stats.date_time)
     .bind(stats.duration)
     .bind(stats.domain)
+    .execute(&state.db)
+    .await
+    .unwrap();
+
+    StatusCode::OK
+}
+
+pub async fn submit_event(
+    TypedHeader(origin): TypedHeader<Origin>,
+    State(state): State<AppState>,
+    Json(stats): Json<EventSubmission>,
+) -> impl IntoResponse {
+    if !stats.uri.contains(origin.hostname()) {
+        println!(
+            "A user tried to submit analytics from {origin} but the URI was from {}",
+            stats.uri
+        );
+        return StatusCode::BAD_REQUEST;
+    }
+
+    sqlx::query(
+        "INSERT INTO events 
+		(uri, session_uuid, event_id, date_time)
+		VALUES
+		($1, $2, $3, $4)",
+    )
+    .bind(stats.uri)
+    .bind(stats.session_uuid)
+    .bind(stats.event_id)
+    .bind(stats.date_time)
     .execute(&state.db)
     .await
     .unwrap();
