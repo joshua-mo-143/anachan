@@ -34,6 +34,7 @@ async function send_logs() {
 			"sessionUuid": uuid,
 			"domain": window.location.host,
 			"dateTime": datetime_entered_isostring,
+			"referrer": document.referrer,
 			"duration": 0	
 		}),
 	});

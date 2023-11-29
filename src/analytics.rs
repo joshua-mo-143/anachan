@@ -20,6 +20,7 @@ pub struct VisitSubmission {
     date_time: DateTime<Utc>,
     duration: i32,
     domain: String,
+    referrer: String,
 }
 
 #[derive(Deserialize)]
@@ -65,15 +66,16 @@ pub async fn submit_visit(
 
     sqlx::query(
         "INSERT INTO stats 
-		(uri, session_uuid, date_time, duration, domain)
+		(uri, session_uuid, date_time, duration, domain, referrer)
 		VALUES
-		($1, $2, $3, $4, $5)",
+		($1, $2, $3, $4, $5, $6)",
     )
     .bind(stats.uri)
     .bind(stats.session_uuid)
     .bind(stats.date_time)
     .bind(stats.duration)
     .bind(stats.domain)
+    .bind(stats.referrer)
     .execute(&state.db)
     .await
     .unwrap();

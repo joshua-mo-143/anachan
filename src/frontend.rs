@@ -24,6 +24,13 @@ struct Event {
     count: i64,
 }
 
+
+#[derive(Serialize, sqlx::FromRow)]
+struct Referrer {
+    referrer: String,
+    count: i64,
+}
+
 #[derive(Serialize, sqlx::FromRow)]
 struct DomainUri {
     uri: String,
@@ -149,6 +156,27 @@ pub async fn query_uri(
         }
     };
 
+    let referrers = match sqlx::query_as::<_, Referrer>(
+        r#"SELECT referrer, COUNT(*) FROM stats
+	WHERE 
+	uri = $1 
+    and
+    DATE_PART('day', CURRENT_TIMESTAMP - DATE_TIME) BETWEEN 0 AND 7
+	GROUP BY referrer
+    ORDER BY count DESC
+    "#,
+    )
+    .bind(&query.domain.clone())
+    .fetch_all(&db)
+    .await
+    {
+        Ok(res) => Some(res),
+        Err(e) => {
+            println!("Encountered an error trying to fetch analytics on the homepage: {e}");
+
+            None
+        }
+    };
     let url = Url::from_str(&query.domain.clone()).unwrap();
 
     let domain_base = url.host_str().unwrap();
@@ -156,6 +184,7 @@ pub async fn query_uri(
     let mut ctx = Context::new();
     ctx.insert("data", &data);
     ctx.insert("events", &events);
+    ctx.insert("referrers", &referrers);
     ctx.insert("domain", &query.domain);
     ctx.insert("domain_base", &domain_base);
     Html(frontend.render("uri", &ctx).unwrap())

@@ -28,4 +28,16 @@
 		<p> No data :( </p>
 	{% endif %}
 		</div>	
+	<div class="uri-data">
+		<h3>Top Referrers</h3> 
+	{% if referrers %}
+	<div class="page-data">
+	{% for referrer in referrers %}
+		<p> {{ referrer.referrer }} - {{ referrer.count }}
+	{% endfor %}
+	</div>
+	{% else %}
+		<p> No data :( </p>
+	{% endif %}
+		</div>	
 </div>

@@ -1,2 +1,1 @@
 assets = ["templates/*"]
-name = "project-debugging"
