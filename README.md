@@ -4,12 +4,12 @@ A simple web analytics service that lets you track views for your website, per U
 ## Quickstart
 
 ### Shuttle Deployment
-Use the following `cargo shuttle` command (make sure you're logged in):
+Use the following `cargo shuttle` command (make sure you're logged in and have `cargo-shuttle` installed):
 ```bash
-cargo shuttle init --from joshua-mo-143/legendary-analytics-machine
+cargo shuttle init --from joshua-mo-143/anachan
 ```
 Follow the prompts, then cd to the folder.
-Next, deploy it:
+Next, deploy it :
 ```bash
 cargo shuttle deploy
 ```
